@@ -5,7 +5,7 @@ public class NameListTest {
 	public static void main(String[] args) {
 		final NameList nl = new NameList();
 		
-		for (Integer i=1;i<3;i++){
+		for (Integer i=1;i<10;i++){
 			nl.add(i.toString());
 		}
 		class NameDropper extends Thread {
@@ -16,7 +16,7 @@ public class NameListTest {
 		}
 
 		
-		for (int i=0;i<10;i++){
+		for (int i=0;i<1000;i++){
 			Thread t = new NameDropper();
 			t.start();
 		}

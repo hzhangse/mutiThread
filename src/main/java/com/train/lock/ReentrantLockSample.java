@@ -6,8 +6,8 @@ import java.util.concurrent.locks.ReentrantLock;
 public class ReentrantLockSample {
 
 	public static void main(String[] args) {
-		testSynchronized();
-		//testReentrantLock();
+		//testSynchronized();
+		testReentrantLock();
 	}
 
 	public static void testReentrantLock() {

@@ -28,16 +28,17 @@ public class Foo {
 		synchronized (Foo.class) {
 			System.out.println(Thread.currentThread().getName()
 					+ ": syncMethod2 execute " + Integer.valueOf(i) + " times");
+			try {
+				
+				Thread.sleep(5000);
+				System.out.println(Thread.currentThread().getName()
+						+ ": syncMethod2 execute "+ Integer.valueOf(i) + " times,"+" need waiting 5 seconds...");
+				
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
-		try {
-			
-			Thread.sleep(5000);
-			System.out.println(Thread.currentThread().getName()
-					+ ": syncMethod2 execute "+ Integer.valueOf(i) + " times,"+" need waiting 5 seconds...");
-			
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		
 	}
 
 }

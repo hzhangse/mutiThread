@@ -1,4 +1,9 @@
 package com.train.sync;
+
+import org.junit.Test;
+
+import com.train.MutiTestRunnable;
+
 class MyThread1 extends Thread {
 	public void run() {
 		for (int i = 0; i < 10; i++) {
@@ -7,17 +12,21 @@ class MyThread1 extends Thread {
 	}
 }
 public class SyncThreadTest {
-
-	public static void testSyncMethod() {
+	
+	
+	@Test
+	public  void testSyncMethod() {
 		MyRunnable r = new MyRunnable();
 		Thread ta = new Thread(r, "Thread-A");
 		Thread tb = new Thread(r, "Thread-B");
-		ta.start();
-		tb.start();
+//		ta.start();
+//		tb.start();
+		Runnable[] arr = {ta,tb};
+		MutiTestRunnable.Execute(arr);
 	}
 
-	
-	public static void testJoin() {
+	@Test
+	public  void testJoin() {
 
 		Thread t1 = new MyThread1();
 		t1.start();
@@ -35,18 +44,19 @@ public class SyncThreadTest {
 	}
 
 
-
-	public static void testStaticSyncMethod() {
-		MyStaticRunnable r = new MyStaticRunnable();
-		Thread ta = new Thread(r, "Thread-A");
-		Thread tb = new Thread(r, "Thread-B");
-		ta.start();
-		tb.start();
+	@Test
+	public  void testStaticSyncMethod() {
+		MyStaticRunnable ra = new MyStaticRunnable("Thread-A");
+		MyStaticRunnable rb = new MyStaticRunnable("Thread-B");
+		Thread ta = new Thread(ra);
+		Thread tb = new Thread(rb);
+//		ta.start();
+//		tb.start();
+		Runnable[] arr = {ta,tb};
+		MutiTestRunnable.Execute(arr);
 	}
 
-	public static void main(String[] args) {
-		// testSyncMethod();
-		 testJoin();
+	public static void main(String[] args){
 		//testStaticSyncMethod();
 	}
 }
