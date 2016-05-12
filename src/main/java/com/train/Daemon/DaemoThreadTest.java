@@ -32,8 +32,9 @@ class MyDaemon implements Runnable {
 		this.object = object;
 	}
 	public void run() {
-		for (long i = 0; i < 9999999L; i++) {
-			System.out.println("后台线程第" + i + "次执行！");
+		int i=0;
+		while (true) {
+			System.out.println("后台线程第" + i++ + "次执行！");
 			System.out.println("监听到当前Common线程执行了 " +((MyCommon) object).time + "次！");
 			try {
 				Thread.sleep(7);

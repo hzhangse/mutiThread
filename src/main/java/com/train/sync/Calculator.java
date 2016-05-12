@@ -11,7 +11,9 @@ public class Calculator extends Thread {
             //（完成计算了）唤醒在此对象监视器上等待的单个线程，在本例中线程A被唤醒 
            //  
             //notifyAll();
+            this.notifyAll();
             System.out.println();
+        
         } 
         System.out.println();
     } 

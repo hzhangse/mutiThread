@@ -25,7 +25,7 @@ public class SyncThreadTest {
 		MutiTestRunnable.Execute(arr);
 	}
 
-	@Test
+	//@Test
 	public  void testJoin() {
 
 		Thread t1 = new MyThread1();
@@ -44,7 +44,7 @@ public class SyncThreadTest {
 	}
 
 
-	@Test
+	//@Test
 	public  void testStaticSyncMethod() {
 		MyStaticRunnable ra = new MyStaticRunnable("Thread-A");
 		MyStaticRunnable rb = new MyStaticRunnable("Thread-B");

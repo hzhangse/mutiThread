@@ -63,26 +63,27 @@ public class TestCyclicBarrier {
 
 				System.out.println(now() + tourName + " Reached Guangzhou");
 
-				barrier.await();
-
+				index = barrier.await();
+				System.out.println(index + tourName + " Reached Guangzhou");
+				
 				Thread.sleep(times[2] * 1000);
 
 				System.out.println(now() + tourName + " Reached Shaoguan");
 
-				barrier.await();
-
+				index = barrier.await();
+				System.out.println(index + tourName + " Reached Shaoguan");
 				Thread.sleep(times[3] * 1000);
 
 				System.out.println(now() + tourName + " Reached Changsha");
 
-				barrier.await();
-
+				index = barrier.await();
+				System.out.println(index + tourName + " Reached Changsha");
 				Thread.sleep(times[4] * 1000);
 
 				System.out.println(now() + tourName + " Reached Wuhan");
 
-				barrier.await();
-
+				index = barrier.await();
+				System.out.println(index + tourName + " Reached Wuhan");
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			} catch (BrokenBarrierException e) {
