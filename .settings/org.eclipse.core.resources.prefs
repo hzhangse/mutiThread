@@ -1,4 +1,7 @@
 eclipse.preferences.version=1
+encoding//src/main/java/com/train/lock/distribute/redis/JedisLockTest.java=UTF-8
+encoding//src/main/java/com/train/lock/distribute/redis/SimpleLock.java=UTF-8
+encoding//src/main/java/com/train/lock/distribute/redis/TestRedis.java=UTF-8
 encoding//src/main/java/com/train/selfThreadPool/ModelSample.java=UTF-8
 encoding//src/main/java/com/train/student/AccesssStudentThreadDemoObjectLock.java=UTF-8
 encoding//src/main/java/com/train/student/AccesssStudentThreadDemoThreadLocal.java=UTF-8

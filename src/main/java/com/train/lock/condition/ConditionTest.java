@@ -1,3 +1,4 @@
+
 package com.train.lock.condition;
 
 import java.util.concurrent.ExecutorService;
@@ -9,7 +10,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class ConditionTest {
 	public static void main(String[] args) {
 		// 创建并发访问的账户
-		MyCount myCount = new MyCount("95599200901215522", 10000);
+		MyCount myCount = new MyCount("95599200901215522", 0);
 		// 创建一个线程池
 		ExecutorService pool = Executors.newFixedThreadPool(2);
 		Thread t1 = new SaveThread("张三", myCount, 2000);
@@ -34,16 +35,16 @@ public class ConditionTest {
  * 存款线程类
  */
 class SaveThread extends Thread {
-	private String name; // 操作人
-	private MyCount myCount; // 账户
-	private int x; // 存款金额
-
+	private String	name;	 // 操作人
+	private MyCount	myCount; // 账户
+	private int	x;	 // 存款金额
+	                         
 	SaveThread(String name, MyCount myCount, int x) {
 		this.name = name;
 		this.myCount = myCount;
 		this.x = x;
 	}
-
+	
 	public void run() {
 		myCount.saving(x, name);
 	}
@@ -53,16 +54,16 @@ class SaveThread extends Thread {
  * 取款线程类
  */
 class DrawThread extends Thread {
-	private String name; // 操作人
-	private MyCount myCount; // 账户
-	private int x; // 存款金额
-
+	private String	name;	 // 操作人
+	private MyCount	myCount; // 账户
+	private int	x;	 // 存款金额
+	                         
 	DrawThread(String name, MyCount myCount, int x) {
 		this.name = name;
 		this.myCount = myCount;
 		this.x = x;
 	}
-
+	
 	public void run() {
 		myCount.drawing(x, name);
 	}
@@ -72,17 +73,20 @@ class DrawThread extends Thread {
  * 普通银行账户，不可透支
  */
 class MyCount {
-	private String oid; // 账号
-	private int cash; // 账户余额
-	private Lock lock = new ReentrantLock(); // 账户锁
-	private Condition _save = lock.newCondition(); // 存款条件
-	private Condition _draw = lock.newCondition(); // 取款条件
-
+	private String	  oid;	                               // 账号
+	private int	  cash;	                       // 账户余额
+	private Lock	  lock	      = new ReentrantLock();	// 账户锁
+	private Condition	_save	= lock.newCondition(); // 存款条件
+	private Condition	_draw	= lock.newCondition(); // 取款条件
+	
+	private Condition	condition	= lock.newCondition(); // lock条件
+	private int	  uplimit	= 3000;
+	
 	MyCount(String oid, int cash) {
 		this.oid = oid;
 		this.cash = cash;
 	}
-
+	
 	/**
 	 * 存款
 	 * 
@@ -93,14 +97,46 @@ class MyCount {
 	 */
 	public void saving(int x, String name) {
 		lock.lock(); // 获取锁
-		if (x > 0) {
-			cash += x; // 存款
-			System.out.println(name + "存款" + x + "，当前余额为" + cash);
+		while (cash + x > uplimit) {
+			try {
+				_save.await();
+			} catch (InterruptedException e) {
+				
+			}
 		}
+		
+		cash += x; // 存款
+		System.out.println(name + "存款" + x + "，当前余额为" + cash);
+		
 		_draw.signalAll(); // 唤醒所有等待线程。
-		lock.unlock(); // 释放锁
+		lock.unlock(); // 释放锁	
 	}
-
+	
+	
+	/**
+	 * 存款
+	 * 
+	 * @param x
+	 *            操作金额
+	 * @param name
+	 *            操作人
+	 */
+	public void saving_sc(int x, String name) {
+		lock.lock(); // 获取锁
+		while (cash + x > uplimit) {
+			try {
+				condition.await();
+			} catch (InterruptedException e) {
+				
+			}
+		}
+		
+		cash += x; // 存款
+		System.out.println(name + "存款" + x + "，当前余额为" + cash);
+		
+		condition.signalAll(); // 唤醒所有等待线程。
+		lock.unlock(); // 释放锁	
+	}
 	/**
 	 * 取款
 	 * 
@@ -112,17 +148,35 @@ class MyCount {
 	public void drawing(int x, String name) {
 		lock.lock(); // 获取锁
 		try {
-			if (cash - x < 0) {
+			while (cash - x < 0) {
 				_draw.await(); // 阻塞取款操作
-			} else {
-				cash -= x; // 取款
-				System.out.println(name + "取款" + x + "，当前余额为" + cash);
 			}
+			cash -= x; // 取款
+			System.out.println(name + "取款" + x + "，当前余额为" + cash);
 			_save.signalAll(); // 唤醒所有存款操作
+			
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		} finally {
 			lock.unlock(); // 释放锁
 		}
 	}
+	
+	public void drawing_dc(int x, String name) {
+		lock.lock(); // 获取锁
+		try {
+			while (cash - x < 0) {
+				condition.await(); // 阻塞取款操作
+			}
+			cash -= x; // 取款
+			System.out.println(name + "取款" + x + "，当前余额为" + cash);
+			condition.signalAll(); // 唤醒所有存款操作
+			
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} finally {
+			lock.unlock(); // 释放锁
+		}
+	}
+	
 }
